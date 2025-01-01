@@ -11,6 +11,9 @@ import {
   Image,
 } from "react-native";
 
+import { printToFileAsync } from "expo-print";
+import { shareAsync } from "expo-sharing";
+
 const { width } = Dimensions.get("window");
 
 const App = () => {
@@ -89,6 +92,25 @@ const App = () => {
     </View>
   );
 
+  const html = `<html>
+  <body>
+  <h1>H2 Canteen</h1>
+  <p>Order Name: ${selectedOrder?.name}</p>
+  <p>Order Number: ${selectedOrder?.number}</p>
+  <p>Order: ${selectedOrder?.items.map((item) => item.name).join(", ")}</p>
+  <p>Total : ${selectedOrder?.total}</p>
+  <p>Status: ${selectedOrder?.status}</p>
+  </body>
+  </html>`;
+
+  let generatePdf = async () => {
+    const file = await printToFileAsync({
+      html,
+      base64: false,
+      filename: "order.pdf",
+    });
+    await shareAsync(file.uri);
+  };
   return (
     <View className="w-full h-full bg-white justify-center items-center px-4">
       <Text style={styles.heading}>Orders</Text>
@@ -145,6 +167,9 @@ const App = () => {
                 ))}
               </View>
             )}
+            <TouchableOpacity onPress={generatePdf} style={styles.closeButton}>
+              <Text style={styles.closeButtonText}>Print</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
               style={styles.closeButton}

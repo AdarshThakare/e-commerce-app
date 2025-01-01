@@ -10,15 +10,13 @@ export default function OrderStatus() {
 
   return (
     <View className="bg-white flex flex-row items-center justify-between w-full px-6">
-      <Text className="font-rubik-semibold text-xl">Order Status</Text>
+      <Text className="font-semibold text-xl">Order Status</Text>
 
       {/* Switch Section */}
       <View className="flex flex-row items-center justify-between gap-2">
         <Text
           className={`${
-            !isChecked
-              ? "text-gray-500 font-rubik-medium"
-              : "text-gray-400 font-rubik"
+            !isChecked ? "text-gray-500 font-medium" : "text-gray-400 font"
           } text-xl `}
         >
           Off
@@ -31,9 +29,7 @@ export default function OrderStatus() {
         />
         <Text
           className={`${
-            isChecked
-              ? "text-blue-600 font-rubik-medium"
-              : "text-gray-400 font-rubik"
+            isChecked ? "text-blue-600 font-medium" : "text-gray-400 font"
           } text-xl `}
         >
           On

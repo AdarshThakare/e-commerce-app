@@ -5,6 +5,7 @@ import order from "../assets/icons/order.png";
 import discount from "../assets/icons/discount.png";
 import bluecircle from "../assets/icons/blue.png";
 import orangecircle from "../assets/icons/orange.png";
+import deleteIcon from "../assets/icons/delete.png";
 
 export default {
   dashboard,
@@ -14,4 +15,5 @@ export default {
   discount,
   bluecircle,
   orangecircle,
+  deleteIcon,
 };

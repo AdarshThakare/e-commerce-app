@@ -30,8 +30,8 @@ export default function WidgetItem({
     <View className="flex flex-row items-center justify-between mx-6 mt-4 p-6 bg-white rounded-2xl .elevation-8 shadow-lg shadow-black">
       {/* Widget Info */}
       <View className="flex flex-col">
-        <Text className="font-rubik text-lg mb-1">{heading}</Text>
-        <Text className="text-4xl font-rubik-semibold mb-2">
+        <Text className="font text-lg mb-1">{heading}</Text>
+        <Text className="text-4xl font-semibold mb-2">
           {amount ? `₹${value}` : value}
         </Text>
         {percent > 0 ? (

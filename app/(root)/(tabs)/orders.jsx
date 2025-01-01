@@ -76,12 +76,12 @@ const App = () => {
   const renderItem = ({ item }) => (
     <View style={styles.row}>
       <Image source={{ uri: item.avatar }} style={styles.avatar} />
-      <Text style={[styles.cell, { width: width * 0.3 }]}>{item.name}</Text>
-      <Text style={[styles.cell, { width: width * 0.27, color: "black" }]}>
+      <Text style={[styles.cell, { width: width * 0.4 }]}>{item.name}</Text>
+      <Text style={[styles.cell, { width: width * 0.3, color: "black" }]}>
         {item.status}
       </Text>
       <TouchableOpacity
-        style={[styles.cell, { width: width * 0.23 }]}
+        style={[styles.cell, { width: width * 0.3 }]}
         onPress={() => handleManage(item)}
       >
         <Text style={styles.manageButton}>Manage</Text>
@@ -90,20 +90,20 @@ const App = () => {
   );
 
   return (
-    <View className="w-full h-full bg-white justify-center items-center">
+    <View className="w-full h-full bg-white justify-center items-center px-4">
       <Text style={styles.heading}>Orders</Text>
       <ScrollView horizontal>
         <View>
           {/* Table Header */}
           <View style={styles.headerRow}>
             <Text style={[styles.headerCell, { width: 50 }]}>Avatar</Text>
-            <Text style={[styles.headerCell, { width: width * 0.3 }]}>
+            <Text style={[styles.headerCell, { width: width * 0.4 }]}>
               Name
             </Text>
-            <Text style={[styles.headerCell, { width: width * 0.27 }]}>
+            <Text style={[styles.headerCell, { width: width * 0.3 }]}>
               Status
             </Text>
-            <Text style={[styles.headerCell, { width: width * 0.23 }]}>
+            <Text style={[styles.headerCell, { width: width * 0.3 }]}>
               Action
             </Text>
           </View>
@@ -204,6 +204,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   manageButton: {
+    marginLeft: 12,
     color: "#007BFF",
     fontWeight: "bold",
   },

@@ -45,7 +45,7 @@ export default function TopTransactions() {
   return (
     <ScrollView style={styles.container} horizontal>
       <View>
-        <Text>TOP TRANSACTIONS</Text>
+        <Text className="text-3xl font-bold px-6 pb-3">TOP TRANSACTIONS</Text>
         <View style={[styles.row, styles.headerRow]}>
           <Text style={[styles.cell, styles.headerText, { width: 200 }]}>
             Id

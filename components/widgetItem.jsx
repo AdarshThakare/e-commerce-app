@@ -7,8 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useState } from "react";
-import OrderStatus from "@/components/orderStatus";
-import { LinearGradient } from "expo-linear-gradient"; // For gradient backgrounds
+import OrderStatus from "./orderStatus";
 import Svg, { Circle } from "react-native-svg";
 
 export default function WidgetItem({
@@ -28,7 +27,7 @@ export default function WidgetItem({
     percent > 10000 ? 9999 : percent < -10000 ? -9999 : percent;
 
   return (
-    <View className="flex flex-row items-center justify-between mx-6 mt-4 p-6 bg-white rounded-2xl .elevation-8 drop-shadow-xl border-2 border-gray-200">
+    <View className="flex flex-row items-center justify-between mx-6 mt-4 p-6 bg-white rounded-2xl .elevation-8 shadow-lg shadow-black">
       {/* Widget Info */}
       <View className="flex flex-col">
         <Text className="font-rubik text-lg mb-1">{heading}</Text>

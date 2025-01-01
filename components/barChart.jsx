@@ -10,7 +10,7 @@ import {
 import React, { useState } from "react";
 import { BarChart, StackedBarChart } from "react-native-chart-kit";
 import { Circle, Image } from "react-native-svg";
-import icons from "@/constants/icons";
+import icons from "../constants/icons";
 
 export default function CustomBarChart({
   data_1 = [12, 303, 834, 1923, 900, 210],
@@ -34,17 +34,27 @@ export default function CustomBarChart({
   return (
     <ScrollView className="w-full h-500 bg-white" horizontal>
       <View className="flex flex-col justify-start items-start p-2 mx-4 my-2">
-        <Text className="py-2 text-3xl font-rubik-bold ">
+        <Text className="py-2 text-3xl font-bold ">
           REVENUE & TRANSACTION CHART
         </Text>
         <View className="px-6 py-2 bg-white w-full">
           <View className="flex flex-row items-center justify-between">
             <Text className="font-medium text-sm">Revenue - Blue</Text>
-            {/* <Image source={icons.bluecircle} width={20} height={20} className="size-2" /> */}
+            <Image
+              source={icons.bluecircle}
+              width={20}
+              height={20}
+              className="size-2"
+            />
           </View>
           <View>
             <Text className="font-medium text-sm">Transaction - Orange</Text>
-            {/* <Image source={icons.orangecircle}  width={20} height={20} className="size-2" /> */}
+            <Image
+              source={icons.orangecircle}
+              width={20}
+              height={20}
+              className="size-2"
+            />
           </View>
         </View>
         <StackedBarChart

@@ -38,7 +38,7 @@ const CategoryItem = ({ value, heading }) => {
 const CategoryTable = ({ data }) => {
   return (
     <View style={styles.container}>
-      <Text className="pt-2 pb-6 text-3xl font-rubik-bold ">INVENTORY</Text>
+      <Text className="pt-2 pb-6 text-3xl font-bold ">INVENTORY</Text>
       <FlatList
         data={data}
         keyExtractor={(item, index) => index.toString()}

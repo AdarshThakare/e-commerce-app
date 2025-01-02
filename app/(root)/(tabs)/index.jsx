@@ -6,10 +6,31 @@ import CustomBarChart from "../../../components/barChart";
 import InventoryList from "../../../components/inventoryList";
 import TopTransactions from "../../../components/toptransactions";
 
+import { useState, useEffect } from "react";
+
 const Spacer = ({ height = 10 }) => <View style={{ height }} />;
+
+const url = "https://primebay-backend.onrender.com/api/v1/dashboard/app/stats";
 
 export default function index() {
   // Define all the components to render
+  const [count, setCount] = useState("");
+  const [perc, setPerc] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setCount(data.stats.count);
+        setPerc(data.stats.changePercent);
+      } catch (error) {
+        console.log("Error fetching data", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   const content = [
     { id: "orderStatus", component: <OrderStatus /> },
     {
@@ -17,8 +38,8 @@ export default function index() {
       component: (
         <WidgetItem
           heading="Revenue"
-          value={1804}
-          percent={100}
+          value={count.revenue}
+          percent={perc.revenue}
           color="#0000FF"
           amount={true}
         />
@@ -29,8 +50,8 @@ export default function index() {
       component: (
         <WidgetItem
           heading="Users"
-          value={31}
-          percent={75}
+          value={count.user}
+          percent={perc.user}
           color="#009999"
           amount={true}
         />
@@ -41,8 +62,8 @@ export default function index() {
       component: (
         <WidgetItem
           heading="Transactions"
-          value={22}
-          percent={50}
+          value={count.order}
+          percent={perc.order}
           color="#FFAA00"
           amount={true}
         />
@@ -53,8 +74,8 @@ export default function index() {
       component: (
         <WidgetItem
           heading="Products"
-          value={138}
-          percent={25}
+          value={count.product}
+          percent={perc.product}
           color="#AA00AA"
           amount={true}
         />

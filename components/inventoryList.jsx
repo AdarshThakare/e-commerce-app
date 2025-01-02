@@ -51,7 +51,7 @@ const CategoryTable = ({ data }) => {
 };
 
 //this can be turned into record
-export default function InventoryList() {
+export default function InventoryList(heading, value) {
   const data = [
     { heading: "Chat", value: 70 }, // Green
     { heading: "Juice", value: 50 }, // Blue

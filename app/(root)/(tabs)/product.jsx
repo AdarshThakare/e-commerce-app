@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,47 +11,68 @@ import {
   Button,
 } from "react-native";
 
+const url = "https://primebay-backend.onrender.com/api/v1/product/latest";
+const Spacer = ({ height = 10 }) => <View style={{ height }} />;
+
 const ProductTable = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedProductIndex, setSelectedProductIndex] = useState(null);
-  const [products, setProducts] = useState([
-    {
-      id: "1",
-      name: "Chicken Shawarma",
-      description: "Delicious chicken shawarma",
-      price: 55,
-      stock: 998,
-      category: "Shawarma",
-      photo: "https://example.com/chicken.jpg",
-    },
-    {
-      id: "2",
-      name: "Paneer Shawarma",
-      description: "Tasty paneer shawarma",
-      price: 55,
-      stock: 998,
-      category: "Shawarma",
-      photo: "https://example.com/paneer.jpg",
-    },
-    {
-      id: "3",
-      name: "Kurkure Chat",
-      description: "Spicy Kurkure Chat",
-      price: 35,
-      stock: 999,
-      category: "Chat",
-      photo: "https://example.com/kurkure.jpg",
-    },
-    {
-      id: "4",
-      name: "Lays Chat",
-      description: "Crispy Lays Chat",
-      price: 35,
-      stock: 999,
-      category: "Chat",
-      photo: "https://example.com/lays.jpg",
-    },
-  ]);
+
+  const [products, setProducts] = useState([]);
+  const [photos, setPhotos] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setProducts(data.products);
+        const photoUrls = products.map((products) => products.photos[0]?.url);
+        setPhotos(photoUrls);
+      } catch (error) {
+        console.log("Error fetching data", error);
+      }
+    };
+    fetchData();
+  }, [photos]);
+  // const [products, setProducts] = useState([
+  //   {
+  //     id: "1",
+  //     name: "Chicken Shawarma",
+  //     description: "Delicious chicken shawarma",
+  //     price: 55,
+  //     stock: 998,
+  //     category: "Shawarma",
+  //     photo: "https://example.com/chicken.jpg",
+  //   },
+  //   {
+  //     id: "2",
+  //     name: "Paneer Shawarma",
+  //     description: "Tasty paneer shawarma",
+  //     price: 55,
+  //     stock: 998,
+  //     category: "Shawarma",
+  //     photo: "https://example.com/paneer.jpg",
+  //   },
+  //   {
+  //     id: "3",
+  //     name: "Kurkure Chat",
+  //     description: "Spicy Kurkure Chat",
+  //     price: 35,
+  //     stock: 999,
+  //     category: "Chat",
+  //     photo: "https://example.com/kurkure.jpg",
+  //   },
+  //   {
+  //     id: "4",
+  //     name: "Lays Chat",
+  //     description: "Crispy Lays Chat",
+  //     price: 35,
+  //     stock: 999,
+  //     category: "Chat",
+  //     photo: "https://example.com/lays.jpg",
+  //   },
+  // ]);
   const [editedProduct, setEditedProduct] = useState({});
 
   const openModal = (product, index) => {
@@ -81,7 +102,7 @@ const ProductTable = () => {
     <View style={styles.row}>
       <View style={styles.cell}>
         <Image
-          source={{ uri: item.photo }}
+          source={{ uri: photos[index] }}
           style={styles.image}
           resizeMode="contain"
         />
@@ -104,13 +125,12 @@ const ProductTable = () => {
       <Text style={[styles.headerCell, styles.headerText]}>Action</Text>
     </View>
   );
-
   return (
     <View style={styles.container}>
       <Text style={styles.tableHeader}>PRODUCTS</Text>
       <FlatList
         data={products}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         renderItem={renderProductItem}
         ListHeaderComponent={renderHeader}
       />
@@ -126,10 +146,17 @@ const ProductTable = () => {
             <View style={styles.modalContent}>
               <Text style={styles.modalHeader}>Manage Product</Text>
               {Object.keys(editedProduct).map((key) => {
-                if (key !== "id" && key !== "photo") {
+                if (
+                  key === "name" ||
+                  key === "description" ||
+                  key === "price" ||
+                  key === "stock" ||
+                  key === "category" ||
+                  key === "photos.url"
+                ) {
                   return (
                     <View key={key} style={styles.inputRow}>
-                      <Text style={styles.inputLabel}>{key}:</Text>
+                      <Text style={styles.inputLabel}>{key}</Text>
                       <TextInput
                         style={styles.input}
                         value={String(editedProduct[key])}
@@ -154,6 +181,7 @@ const ProductTable = () => {
           </View>
         </Modal>
       )}
+      <Spacer height={60} />
     </View>
   );
 };
@@ -222,7 +250,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: "#fff",
-    padding: 20,
+    padding: 15,
     borderRadius: 10,
     width: "90%",
   },

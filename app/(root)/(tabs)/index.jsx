@@ -16,6 +16,7 @@ export default function index() {
   // Define all the components to render
   const [count, setCount] = useState("");
   const [perc, setPerc] = useState("");
+  const [chart, setChart] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +25,7 @@ export default function index() {
         const data = await response.json();
         setCount(data.stats.count);
         setPerc(data.stats.changePercent);
+        setChart(data.stats.chart);
       } catch (error) {
         console.log("Error fetching data", error);
       }
@@ -98,14 +100,14 @@ export default function index() {
       id: "customBarChart",
       component: (
         <CustomBarChart
-          data_1={[12, 303, 834, 1923, 900, 210]}
-          data_2={[403, 54, 654, 628, 354, 434]}
+          data_1={chart.revenue}
+          data_2={chart.order}
           title_1="Revenue"
           title_2="Transaction"
           bgColor_1="#007bff"
           bgColor_2="#ff6347"
           horizontal={false}
-          labels={["Jan", "Feb", "Mar", "Apr", "May", "Jun"]}
+          labels={["Aug", "Sept", "Oct", "Nov", "Dec", "Jan"]}
         />
       ),
     },

@@ -8,40 +8,56 @@ import {
   Dimensions,
   FlatList,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const data = [
-  {
-    id: "675075bc96f7de66a9edf6d5",
-    quantity: 1,
-    discount: 0,
-    amount: 57,
-    status: "Delivered",
-  },
-  {
-    id: "6750c6ba69aaf405fb98e06a",
-    quantity: 1,
-    discount: 0,
-    amount: 57,
-    status: "Delivered",
-  },
-  {
-    id: "67515b1c82d95f0a6da9d85e",
-    quantity: 1,
-    discount: 0,
-    amount: 64,
-    status: "Delivered",
-  },
-  {
-    id: "6752f175a1de5929c5e81fc8",
-    quantity: 1,
-    discount: 0,
-    amount: 13,
-    status: "Delivered",
-  },
-];
+const url = "https://primebay-backend.onrender.com/api/v1/dashboard/app/stats";
+// const data = [
+//   {
+//     id: "675075bc96f7de66a9edf6d5",
+//     quantity: 1,
+//     discount: 0,
+//     amount: 57,
+//     status: "Delivered",
+//   },
+//   {
+//     id: "6750c6ba69aaf405fb98e06a",
+//     quantity: 1,
+//     discount: 0,
+//     amount: 57,
+//     status: "Delivered",
+//   },
+//   {
+//     id: "67515b1c82d95f0a6da9d85e",
+//     quantity: 1,
+//     discount: 0,
+//     amount: 64,
+//     status: "Delivered",
+//   },
+//   {
+//     id: "6752f175a1de5929c5e81fc8",
+//     quantity: 1,
+//     discount: 0,
+//     amount: 13,
+//     status: "Delivered",
+//   },
+// ];
 
 export default function TopTransactions() {
+  const [stats, setStats] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setStats(data.stats.latestTransactions);
+      } catch (error) {
+        console.log("Error fetching data", error);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <ScrollView style={styles.container} horizontal>
       <View>
@@ -64,13 +80,13 @@ export default function TopTransactions() {
           </Text>
         </View>
         {/* Table Data */}
-        {data.map((item) => (
-          <View key={item.id} style={styles.row}>
-            <Text style={[styles.cell, { width: 230 }]}>{item.id}</Text>
-            <Text style={[styles.cell, { width: 80 }]}>{item.quantity}</Text>
-            <Text style={[styles.cell, { width: 80 }]}>{item.discount}</Text>
-            <Text style={[styles.cell, { width: 80 }]}>{item.amount}</Text>
-            <Text style={[styles.cell, { width: 120 }]}>{item.status}</Text>
+        {stats.map((stats) => (
+          <View key={stats._id} style={styles.row}>
+            <Text style={[styles.cell, { width: 230 }]}>{stats._id}</Text>
+            <Text style={[styles.cell, { width: 80 }]}>{stats.quantity}</Text>
+            <Text style={[styles.cell, { width: 80 }]}>{stats.discount}</Text>
+            <Text style={[styles.cell, { width: 80 }]}>{stats.amount}</Text>
+            <Text style={[styles.cell, { width: 120 }]}>{stats.status}</Text>
           </View>
         ))}
       </View>

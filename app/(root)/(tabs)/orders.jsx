@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,75 +11,93 @@ import {
   Image,
 } from "react-native";
 
+const url = "https://primebay-backend.onrender.com/api/v1/order/app/all";
+
 import { printToFileAsync } from "expo-print";
 import { shareAsync } from "expo-sharing";
 
 const { width } = Dimensions.get("window");
 
+const Spacer = ({ height = 10 }) => <View style={{ height }} />;
+
 const App = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  const orders = [
-    {
-      id: "1",
-      avatar: "https://via.placeholder.com/50",
-      name: "Anumeha Patoria",
-      status: "Delivered",
-      items: ["Paneer Cheese Franky: 1", "Modi Franky: 1"],
-      total: 97,
-    },
-    {
-      id: "2",
-      avatar: "https://via.placeholder.com/50",
-      name: "Fantastic Four",
-      status: "Delivered",
-      items: ["Paneer Cheese Franky: 2"],
-      total: 82,
-    },
-    {
-      id: "3",
-      avatar: "https://via.placeholder.com/50",
-      name: "Mr SJ",
-      status: "Delivered",
-      items: ["Modi Franky: 3"],
-      total: 153,
-    },
-    {
-      id: "4",
-      avatar: "https://via.placeholder.com/50",
-      name: "Dishant Yadav",
-      status: "Delivered",
-      items: ["Paneer Cheese Franky: 1", "Modi Franky: 1"],
-      total: 97,
-    },
-    {
-      id: "5",
-      avatar: "https://via.placeholder.com/50",
-      name: "Prajyot Tayde",
-      status: "Delivered",
-      items: ["Modi Franky: 2"],
-      total: 102,
-    },
-    {
-      id: "6",
-      avatar: "https://via.placeholder.com/50",
-      name: "Aditya Raj",
-      status: "Delivered",
-      items: ["Paneer Cheese Franky: 3"],
-      total: 123,
-    },
-  ];
+  const [orders, setOrders] = useState([]);
+  const [food, setFood] = useState([]);
 
-  const handleManage = (order) => {
-    setSelectedOrder(order);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setOrders(data.orders);
+        const groupedOrderItems = data.orders.map((order) => order.orderItems);
+        setFood(groupedOrderItems);
+      } catch (error) {
+        console.log("Error fetching data", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // const orders = [
+  //   {
+  //     id: "1",
+  //     name: "Anumeha Patoria",
+  //     status: "Delivered",
+  //     items: ["Paneer Cheese Franky: 1", "Modi Franky: 1"],
+  //     total: 97,
+  //   },
+  //   {
+  //     id: "2",
+  //     name: "Fantastic Four",
+  //     status: "Delivered",
+  //     items: ["Paneer Cheese Franky: 2"],
+  //     total: 82,
+  //   },
+  //   {
+  //     id: "3",
+  //     name: "Mr SJ",
+  //     status: "Delivered",
+  //     items: ["Modi Franky: 3"],
+  //     total: 153,
+  //   },
+  //   {
+  //     id: "4",
+  //     name: "Dishant Yadav",
+  //     status: "Delivered",
+  //     items: ["Paneer Cheese Franky: 1", "Modi Franky: 1"],
+  //     total: 97,
+  //   },
+  //   {
+  //     id: "5",
+  //     name: "Prajyot Tayde",
+  //     status: "Delivered",
+  //     items: ["Modi Franky: 2"],
+  //     total: 102,
+  //   },
+  //   {
+  //     id: "6",
+  //     name: "Aditya Raj",
+  //     status: "Delivered",
+  //     items: ["Paneer Cheese Franky: 3"],
+  //     total: 123,
+  //   },
+  // ];
+
+  const handleManage = (orders) => {
+    setSelectedOrder(orders);
+    console.log(orders);
     setModalVisible(true);
   };
 
   const renderItem = ({ item }) => (
     <View style={styles.row}>
-      <Image source={{ uri: item.avatar }} style={styles.avatar} />
-      <Text style={[styles.cell, { width: width * 0.4 }]}>{item.name}</Text>
+      <Text style={[styles.cell, { width: width * 0.4 }]}>
+        {item.user.name}
+      </Text>
       <Text style={[styles.cell, { width: width * 0.3, color: "black" }]}>
         {item.status}
       </Text>
@@ -94,12 +112,39 @@ const App = () => {
 
   const html = `<html>
   <body>
-  <h1>H2 Canteen</h1>
-  <p>Order Name: ${selectedOrder?.name}</p>
-  <p>Order Number: ${selectedOrder?.number}</p>
-  <p>Order: ${selectedOrder?.items.map((item) => item.name).join(", ")}</p>
-  <p>Total : ${selectedOrder?.total}</p>
-  <p>Status: ${selectedOrder?.status}</p>
+  <h2 style="text-align : center">H2-CANTEEN</h2>
+  <p style="text-align: center">------------------------------------------------</p>
+  <p style="text-align : center">ORDER NAME: ${selectedOrder?.user.name}</p>
+  <p style="text-align : center">PHONE NUMBER: ${
+    selectedOrder?.shippingInfo.phone
+  }</p>
+  <p style="text-align : center">LOCATION: ${
+    selectedOrder?.shippingInfo.city
+  }, ${selectedOrder?.shippingInfo.state} - ${
+    selectedOrder?.shippingInfo.pinCode
+  }</p>
+  <br>
+  <p style="text-align : center">---==<< ITEMS ORDERED >>==---</p>
+        ${selectedOrder?.orderItems
+          .map(
+            (item) =>
+              `<p style="text-align : center">- ${item.name} x ${item.quantity} = ₹${item.price}</p>`
+          )
+          .join("")}
+  <p style="text-align : center"Sub Total : ₹${selectedOrder?.subTotal}</p>
+  <br>
+  <p style="text-align : center">SHIPPING CHARGES: ${
+    selectedOrder?.shippingCharges
+  }</p>
+  <p style="text-align : center">TAX AMOUNT: ${selectedOrder?.tax}</p>
+  <p style="text-align : center">DISCOUNT: ${selectedOrder?.discount}</p>
+  <br>
+  <p style="text-align : center ; font-weight : bold">TOTAL : ${
+    selectedOrder?.total
+  }</p>
+  <p style="text-align : center ; font-weight : bold">STATUS: ${
+    selectedOrder?.status
+  }</p>
   </body>
   </html>`;
 
@@ -118,7 +163,6 @@ const App = () => {
         <View>
           {/* Table Header */}
           <View style={styles.headerRow}>
-            <Text style={[styles.headerCell, { width: 50 }]}>Avatar</Text>
             <Text style={[styles.headerCell, { width: width * 0.4 }]}>
               Name
             </Text>
@@ -134,9 +178,10 @@ const App = () => {
           <FlatList
             data={orders}
             renderItem={renderItem}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item._id}
             contentContainerStyle={styles.table}
           />
+          <Spacer height={60} />
         </View>
       </ScrollView>
 
@@ -149,33 +194,55 @@ const App = () => {
       >
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Order Info</Text>
+            <Text style={styles.modalTitle}>ORDER INFO</Text>
             {selectedOrder && (
               <View>
-                <Text style={styles.modalText}>Name: {selectedOrder.name}</Text>
                 <Text style={styles.modalText}>
-                  Status: {selectedOrder.status}
+                  Name: {selectedOrder.user.name}
                 </Text>
                 <Text style={styles.modalText}>
-                  Total: ₹{selectedOrder.total}
+                  Phone Number : {selectedOrder.shippingInfo.phone}
                 </Text>
-                <Text style={styles.modalText}>Items:</Text>
-                {selectedOrder.items.map((item, index) => (
+                <Text></Text>
+                <Text style={styles.modalText}>Items Ordered :</Text>
+                {selectedOrder.orderItems.map((item, index) => (
                   <Text key={index} style={styles.modalText}>
-                    - {item}
+                    - {item.name} x {item.quantity} = ₹{item.price}
                   </Text>
                 ))}
+                <Text style={styles.modalText}>
+                  Sub Total : ₹{selectedOrder.subTotal}
+                </Text>
+                <Text style={styles.modalText}>
+                  Shipping Charges : ₹{selectedOrder.shippingCharges}
+                </Text>
+                <Text style={styles.modalText}>Tax : ₹{selectedOrder.tax}</Text>
+                <Text style={styles.modalText}>
+                  Discount : ₹{selectedOrder.discount}
+                </Text>
+                <Text></Text>
+                <Text style={styles.totalText}>
+                  Total : ₹{selectedOrder.total}
+                </Text>
+                <Text style={styles.totalText}>
+                  Status: {selectedOrder.status}
+                </Text>
               </View>
             )}
-            <TouchableOpacity onPress={generatePdf} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Print</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setModalVisible(false)}
-              style={styles.closeButton}
-            >
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
+            <View className="flex flex-row justify-center gap-5">
+              <TouchableOpacity
+                onPress={generatePdf}
+                style={styles.printButton}
+              >
+                <Text style={styles.closeButtonText}>PRINT</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                style={styles.closeButton}
+              >
+                <Text style={styles.closeButtonText}>CLOSE</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -240,7 +307,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContainer: {
-    width: "80%",
+    width: "92%",
     backgroundColor: "white",
     borderRadius: 8,
     padding: 16,
@@ -253,18 +320,30 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 900,
     marginBottom: 16,
   },
   modalText: {
     fontSize: 16,
     marginBottom: 8,
   },
+  totalText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
   closeButton: {
+    marginTop: 16,
+    backgroundColor: "#ff0000",
+    paddingVertical: 8,
+    paddingHorizontal: 40,
+    borderRadius: 4,
+  },
+  printButton: {
     marginTop: 16,
     backgroundColor: "#007BFF",
     paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 40,
     borderRadius: 4,
   },
   closeButtonText: {

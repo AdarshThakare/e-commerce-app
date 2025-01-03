@@ -8,7 +8,7 @@ import {
   Dimensions,
   FlatList,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const CategoryItem = ({ value, heading }) => {
   return (
@@ -35,12 +35,12 @@ const CategoryItem = ({ value, heading }) => {
   );
 };
 
-const CategoryTable = ({ data }) => {
+const CategoryTable = ({ dataArray }) => {
   return (
     <View style={styles.container}>
-      <Text className="pt-2 pb-6 text-3xl font-bold ">INVENTORY</Text>
+      <Text className="pt-2 pb-6 text-3xl font-bold">INVENTORY</Text>
       <FlatList
-        data={data}
+        data={dataArray}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <CategoryItem value={item.value} heading={item.heading} />
@@ -50,22 +50,39 @@ const CategoryTable = ({ data }) => {
   );
 };
 
-//this can be turned into record
-export default function InventoryList(heading, value) {
-  const data = [
-    { heading: "Chat", value: 70 }, // Green
-    { heading: "Juice", value: 50 }, // Blue
-    { heading: "Shwarma", value: 30 }, // Orange
-    { heading: "Chutney", value: 90 }, // Red
-    { heading: "Dahi", value: 67 }, // Green
-    { heading: "Pav Bhaji", value: 52 }, // Blue
-    { heading: "Sandwich", value: 11 }, // Orange
-    { heading: "Cold Drinks", value: 78 }, // Red
-  ];
+const url = "https://primebay-backend.onrender.com/api/v1/dashboard/app/stats";
+
+export default function InventoryList() {
+  const [categoryData, setCategoryData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const dataArray = data.stats.categoryCount;
+
+        const ans = dataArray.map((item) => {
+          const key = Object.keys(item)[0]; // Access the key
+          const value = item[key]; // Access the value
+
+          return {
+            heading: key, // Map the key to `heading`
+            value: value, // Map the value to `value`
+          };
+        });
+
+        setCategoryData(ans); // Set the ans array as the state
+      } catch (error) {
+        console.log("Error fetching data", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <View style={styles.appContainer}>
-      <CategoryTable data={data} />
+      <CategoryTable dataArray={categoryData} />
     </View>
   );
 }
